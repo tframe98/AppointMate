@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  password   String
+  role       String
+  business   Business? @relation(fields: [businessId], references: [id])
+  businessId Int?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Business {
+  id           Int           @id @default(autoincrement())
+  name         String
+  users        User[]
+  employees    Employee[]
+  clients      Client[]
+  appointments Appointment[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Client {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String         @unique
+  phone        String?
+  business     Business       @relation(fields: [businessId], references: [id])
+  businessId   Int
+  appointments Appointment[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Employee {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String         @unique
+  phone        String?
+  role         String
+  business     Business       @relation(fields: [businessId], references: [id])
+  businessId   Int
+  appointments Appointment[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Appointment {
+  id           Int           @id @default(autoincrement())
+  date         DateTime
+  service      String
+  color        String?
+  client       Client?        @relation(fields: [clientId], references: [id])
+  clientId     Int?
+  employee     Employee?      @relation(fields: [employeeId], references: [id])
+  employeeId   Int?
+  business     Business       @relation(fields: [businessId], references: [id])
+  businessId   Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}

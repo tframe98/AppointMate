@@ -1,0 +1,78 @@
+/* Dashboard.css */
+
+.dashboard-container {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+.dashboard-content {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+}
+
+.form-section, .appointments-section {
+  background: #f8f9fa;
+  padding: 2rem;
+  width: 45%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Appointment Form Styles */
+.appointment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.appointment-form label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.appointment-form input, .appointment-form button {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.appointment-form button {
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.appointment-form button:hover {
+  background: #0056b3;
+}
+
+/* Appointment List Styles */
+.appointment-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.appointment-item {
+  background: white;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-item strong {
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.appointment-item p {
+  font-size: 1rem;
+  color: #555;
+}
