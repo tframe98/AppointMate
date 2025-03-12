@@ -7,28 +7,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/* User Roles Enum */
+enum UserRole {
+  ADMIN
+  EMPLOYEE
+  CLIENT
+  BUSINESS_OWNER
+}
+
+/* Users Table */
 model User {
   id         Int       @id @default(autoincrement())
   email      String    @unique
   password   String
-  role       String
+  role       String    // Keep old column for now
+  role_enum  UserRole?  // Add new enum column
   business   Business? @relation(fields: [businessId], references: [id])
   businessId Int?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }
 
+/* Businesses Table */
 model Business {
   id           Int           @id @default(autoincrement())
   name         String
+  type         String?
+  email        String   @unique
+  phone        String?
+  address      String?
+  operatingHours  String?
+  ownerId      Int      @unique
   users        User[]
   employees    Employee[]
   clients      Client[]
+  services     Service[] // Businesses offer services
   appointments Appointment[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 }
 
+/* Clients Table */
 model Client {
   id           Int           @id @default(autoincrement())
   name         String
@@ -41,6 +60,7 @@ model Client {
   updatedAt    DateTime       @updatedAt
 }
 
+/* Employees Table */
 model Employee {
   id           Int           @id @default(autoincrement())
   name         String
@@ -54,10 +74,23 @@ model Employee {
   updatedAt    DateTime       @updatedAt
 }
 
+/* Services Table */
+model Service {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String?
+  price        Float
+  business     Business       @relation(fields: [businessId], references: [id])
+  businessId   Int
+  appointments Appointment[]
+}
+
+/* Appointments Table */
 model Appointment {
   id           Int           @id @default(autoincrement())
   date         DateTime
-  service      String
+  service      Service?      @relation(fields: [serviceId], references: [id])
+  serviceId    Int?
   color        String?
   client       Client?        @relation(fields: [clientId], references: [id])
   clientId     Int?
@@ -65,6 +98,15 @@ model Appointment {
   employeeId   Int?
   business     Business       @relation(fields: [businessId], references: [id])
   businessId   Int
+  status       AppointmentStatus @default(PENDING) // Track appointment status
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 }
+
+/* Appointment Status Enum */
+enum AppointmentStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+}
+

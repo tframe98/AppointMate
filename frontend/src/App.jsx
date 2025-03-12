@@ -1,26 +1,62 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from '../src/pages/Home';
-import Auth from '../src/pages/Auth';
-import Dashboard from '../src/pages/Dashboard';
-import ProtectedRoute from '../src/components/ProtectedRoute';
-
-function App() {
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Employees from "./pages/Employees";
+import Clients from "./pages/Clients";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Appointments from "./pages/Appointments";
+import Signup from "./pages/SignUp"; 
+import Dashboard from "./pages/Dashboard";
+import Onboarding from "./pages/Onboarding";
+import AuthProvider from "./context/AuthContext";
+const App = () => {
   return (
-    <BrowserRouter>
+    
+    <Router>
+      <AuthProvider>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/auth" element={<Auth />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route
-          path="/dashboard"
+          path="/onboarding"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <Onboarding />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clients"
+          element={
+            <ProtectedRoute>
+              <Clients />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employees"
+          element={
+            <ProtectedRoute>
+              <Employees />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/appointments"
+          element={
+            <ProtectedRoute>
+              <Appointments />
             </ProtectedRoute>
           }
         />
       </Routes>
-    </BrowserRouter>
+      </AuthProvider>
+    </Router>
+    
   );
-}
+};
 
 export default App;

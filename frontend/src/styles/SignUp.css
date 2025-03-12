@@ -1,0 +1,58 @@
+/* Signup Page Styles */
+.signup-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h2 {
+  color: #081f5c;
+  margin-bottom: 20px;
+}
+
+/* Form Fields */
+.signup-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Register Button */
+.signup-form button {
+  width: 100%;
+  padding: 10px;
+  background: #334EAC;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.signup-form button:hover {
+  background: #7096D1;
+}
+
+/* Error Message */
+.error-message {
+  color: #ff4d4d;
+  margin-bottom: 10px;
+}
+
+/* Login Link */
+p span {
+  cursor: pointer;
+  color: #334EAC;
+  font-weight: bold;
+}
+
+p span:hover {
+  color: #7096D1;
+}

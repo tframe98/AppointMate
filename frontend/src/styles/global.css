@@ -1,0 +1,46 @@
+/* Global Styles - global.css */
+:root {
+  --primary-dark: #081f5c;
+  --primary: #334EAC;
+  --secondary: #7096D1;
+  --light-blue: #D0E3FF;
+  --lighter-blue: #E7F1FF;
+  --background: #F9FCFF;
+  --text-dark: #081f5c;
+  --text-light: #334EAC;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-dark);
+}
+
+button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: var(--secondary);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

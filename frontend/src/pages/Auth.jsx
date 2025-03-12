@@ -1,48 +1,39 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "../styles/Auth.css";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
-
-const Auth = ({ isLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Auth = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(true);
 
-  const handleSubmit = async (e) => {
+  // Detect URL path to determine if it's login or register
+  useEffect(() => {
+    setIsLogin(location.pathname === "/login");
+  }, [location.pathname]);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const url = isLogin
-      ? `${API_BASE_URL}/api/auth/login`
-      : `${API_BASE_URL}/api/auth/register`;
-
-    try {
-      const response = await axios.post(url, { email, password });
-      localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Authentication error:', error);
-      alert('Authentication failed. Please try again.');
-    }
+    // Redirect after login/register
+    navigate("/dashboard"); // Change this if necessary
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
-    </form>
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <h2>{isLogin ? "Login" : "Sign Up"}</h2>
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Password" required />
+        {!isLogin && <input type="password" placeholder="Confirm Password" required />}
+        <button type="submit">{isLogin ? "Login" : "Sign Up"}</button>
+        <p>
+          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+          <span className="auth-toggle" onClick={() => navigate(isLogin ? "/register" : "/login")}>
+            {isLogin ? "Sign Up" : "Login"}
+          </span>
+        </p>
+      </form>
+    </div>
   );
 };
 

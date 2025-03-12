@@ -1,27 +1,35 @@
+/* ClientList.css */
 .client-list-container {
-  padding: 2rem;
+  background: var(--background);
+  color: var(--text-dark);
+  padding: 20px;
+  border-radius: 8px;
 }
 
-.search-input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 1rem;
+.client-list-header {
+  background: var(--primary);
+  color: white;
+  padding: 15px;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
 }
 
-.client-table {
+.client-list-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
 }
 
-.client-table th, .client-table td {
-  padding: 1rem;
-  text-align: left;
-  border: 1px solid #ddd;
+.client-list-table th,
+.client-list-table td {
+  padding: 12px;
+  border: 1px solid var(--light-blue);
 }
 
-.client-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+.client-list-table th {
+  background: var(--secondary);
+  color: white;
+}
+
+.client-list-table tr:nth-child(even) {
+  background: var(--lighter-blue);
 }

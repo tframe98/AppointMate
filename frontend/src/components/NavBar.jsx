@@ -1,20 +1,30 @@
-import { Link, useNavigate } from 'react-router-dom';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { isAuthenticated } from "../api/api";
+import "../styles/Navbar.css";
 
-function Navbar() {
+const Navbar = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/auth');
+  const handleLogin = () => {
+    navigate("/login"); // Redirect to login page instead of logging out
   };
 
   return (
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="/dashboard">Dashboard</Link>
-      <button onClick={handleLogout}>Logout</button>
+    <nav className="navbar">
+      <div className="navbar-container">
+        <div className="navbar-logo">AppointMate</div>
+        <div className="navbar-links">
+          <Link to="/">Home</Link>
+          {isAuthenticated() && <Link to="/clients">Clients</Link>}
+          {isAuthenticated() && <Link to="/employees">Employees</Link>}
+          <span className="navbar-login" onClick={handleLogin}>
+            Login
+          </span>
+        </div>
+      </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

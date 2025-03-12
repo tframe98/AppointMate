@@ -1,54 +1,44 @@
-import express from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import express from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { PrismaClient } from "@prisma/client";
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Login Route
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
+router.post("/register", async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    const { email, password, role } = req.body;
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return res.status(401).json({ error: 'Invalid credentials' });
+    
+    console.log("Request Body:", req.body);
 
-    const token = jwt.sign(
-      { userId: user.id, businessId: user.businessId }, // Include businessId
-      process.env.SECRET_KEY,
-      { expiresIn: '24h' }
-    );
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password are required" });
+    }
 
-    res.status(200).json({ token });
-  } catch (error) {
-    console.error('Error logging in:', error.message);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+    
+    const hashedPassword = await bcrypt.hash(String(password), 10);
 
-// Register Route
-router.post('/register', async (req, res) => {
-  const { email, password, role, businessId } = req.body;
-
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
-        role,
-        businessId,
+        role: role || "BUSINESS_OWNER", // Default role to BUSINESS_OWNER
       },
     });
 
-    res.status(201).json({ message: 'User registered successfully', user });
+    
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(201).json({ success: true, token, user });
   } catch (error) {
-    console.error('Error registering user:', error.message);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error registering user:", error);
+    res.status(500).json({ success: false, message: "Registration failed" });
   }
 });
 

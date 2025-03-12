@@ -1,71 +1,231 @@
 /* Home.css */
-
-.home-page {
-  padding: 4rem 2rem;
+.home-container {
+  background: var(--background);
+  color: var(--text-dark);
+  padding: 0px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
+/* Hero Section */
 .hero-section {
-  background: #f8f9fa;
-  padding: 5rem 2rem;
-  border-radius: 8px;
+  width: 100vw; 
+  max-width: 100%; 
+  padding: 80px 20px; 
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  border-radius: 0; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .hero-section h1 {
-  font-size: 3rem;
-  color: #333;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #E7F1FF;
 }
 
 .hero-section p {
-  font-size: 1.5rem;
-  color: #555;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  
+}
+
+.hero-button {
+  background: white;
+  color: var(--primary);
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  width:fit-content;
+}
+
+.hero-button:hover {
+  background: var(--lighter-blue);
+}
+
+/* Features Section */
+.features-section {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: row; /* Arrange items in a row */
+  justify-content: center; /* Center items in the row */
+  gap: 20px; /* Spacing between cards */
+  width: 100%;
+  max-width: 1100px; /* Ensures more cards fit in a row */
+  flex-wrap: nowrap; /* Allows wrapping on smaller screens */
+}
+
+
+.feature-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+  width: 250px; /* Set a fixed width for better alignment */
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.feature-card h3 {
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+/* Call to Action */
+.cta-section {
+  margin-top: 60px;
+  background: var(--primary-dark);
+  color: white;
+  padding: 40px;
+  text-align: center;
+  border-radius: 10px;
+  width: 100%; /* Ensure full width */
+  max-width: 1020px; /* Match features section */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-section h2 {
+  margin-bottom: 15px;
+  color: #E7F1FF;
 }
 
 .cta-button {
-  background: #007bff;
+  background: var(--secondary);
   color: white;
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border-radius: 6px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  margin-top: 1.5rem;
+  transition: background 0.3s ease-in-out;
 }
 
 .cta-button:hover {
-  background: #0056b3;
+  background: var(--lighter-blue);
 }
 
-.how-it-works {
-  padding: 3rem 2rem;
+/* Testimonials Section */
+.testimonials-section {
+  margin-top: 80px;
+  text-align: center;
+  padding: 40px 20px;
+  width: 100%;
+  ;
 }
 
-.how-it-works h2 {
-  font-size: 2rem;
-  color: #333;
-}
-
-.step-cards {
+/* Container should match the width of the features and pricing sections */
+.testimonials-container {
+  height:fit-content;
   display: flex;
-  justify-content: space-around;
-  margin-top: 2rem;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap; /* Allow wrapping instead of forcing a row */
+  max-width: 1100px; /* Align with other sections */
+  margin: 0 auto;
+  overflow-x: hidden;
+  padding-bottom: 20px; /* Remove horizontal scrolling */
 }
 
-.step-card {
+/* Individual Testimonial Cards */
+.testimonial-card {
   background: white;
-  padding: 2rem;
-  width: 30%;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: left;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px; /* Keep them consistent */
+  flex-shrink: 0;
 }
 
-.step-card h3 {
-  font-size: 1.75rem;
-  color: #333;
+/* Pricing Section */
+
+.pricing-section {
+  margin-top: 20px;
+  text-align: center;
+  padding: 40px 20px;
 }
 
-.step-card p {
-  font-size: 1.2rem;
-  color: #555;
+.pricing-container {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  max-width: 1100px;
+  width: 100%; /* Match other sections */
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: white;
+  padding: 50px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 280px;
+}
+
+.pricing-card h3 {
+  color: var(--primary);
+}
+
+.pricing-price {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.pricing-button {
+  background: var(--primary);
+  color: white;
+  padding: 10px 16px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.pricing-button:hover {
+  background: var(--secondary);
+}
+
+/* Footer */
+.footer {
+  margin-top: 60px;
+  background: var(--primary-dark);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  width: 100vw; /* Make it full width */
+  left: 0;
+  bottom: 0;
+}
+
+.footer a {
+  color: var(--lighter-blue);
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.footer a:hover {
+  text-decoration: underline;
 }

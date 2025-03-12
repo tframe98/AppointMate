@@ -1,0 +1,55 @@
+.onboarding-container {
+  max-width: 600px;
+  margin:  auto;
+  margin-top: 100px;;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.onboarding-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  visibility: visible !important;
+
+}
+
+.onboarding-form input, .onboarding-form select {
+  width: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.service-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.service-input input {
+  flex: 1;
+  padding: 8px;
+}
+
+.onboarding-container button {
+  display: block !important;
+  background-color: var(--primary) !important;
+  color: white !important;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.onboarding-container button:hover {
+  background-color: var(--secondary) !important;
+}
+
+.onboarding-container button:disabled {
+  background-color: gray !important;
+  cursor: not-allowed;
+}
