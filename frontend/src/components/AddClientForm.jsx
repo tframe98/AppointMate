@@ -9,7 +9,7 @@ const AddClientForm = ({ onClose }) => {
     date: "",
     time: "",
     employeeId: "",
-    color: "#007bff", // Default color
+    color: "#007bff", 
   });
 
   const [employees, setEmployees] = useState([]);
@@ -38,17 +38,11 @@ const AddClientForm = ({ onClose }) => {
       <form onSubmit={handleSubmit}>
         <input type="text" name="name" placeholder="Client Name" value={clientData.name} onChange={handleChange} required />
         <input type="email" name="email" placeholder="Client Email" value={clientData.email} onChange={handleChange} required />
-
-        {/* ✅ Allow typing in the service name */}
         <input type="text" name="service" placeholder="Service Type" value={clientData.service} onChange={handleChange} required />
-
-        {/* ✅ Allow selecting a custom color */}
         <label>Choose Service Color:</label>
         <input type="color" name="color" value={clientData.color} onChange={handleChange} />
-
         <input type="date" name="date" value={clientData.date} onChange={handleChange} required />
         <input type="time" name="time" value={clientData.time} onChange={handleChange} required />
-
         <select name="employeeId" value={clientData.employeeId} onChange={handleChange} required>
           <option value="">Select Employee</option>
           {employees.map((emp) => (

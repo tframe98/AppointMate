@@ -1,6 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
 
-// Helper function for API calls
 const request = async (endpoint, method = "GET", body = null) => {
   const headers = { "Content-Type": "application/json" };
   const token = localStorage.getItem("token");
@@ -17,7 +16,7 @@ const request = async (endpoint, method = "GET", body = null) => {
 
   return response.json();
 };
-// Register API
+
 export const registerUser = async (userData) => {
   try {
     const response = await fetch("http://localhost:5001/api/auth/register", {
@@ -27,10 +26,10 @@ export const registerUser = async (userData) => {
     });
 
     const data = await response.json();
-    console.log("Signup Response:", data); // ✅ Debugging log
+    console.log("Signup Response:", data); 
 
     if (data.token) {
-      localStorage.setItem("token", data.token); // ✅ Store token
+      localStorage.setItem("token", data.token); 
       return { success: true, user: data.user, token: data.token };
     }
 
@@ -41,7 +40,7 @@ export const registerUser = async (userData) => {
   }
 };
 
-//Business Owner Api
+
 export const createBusinessProfile = async (businessData) => {
   const token = localStorage.getItem("token");
   const response = await fetch("http://localhost:5001/api/business/setup", {
@@ -56,24 +55,24 @@ export const createBusinessProfile = async (businessData) => {
   return response.json();
 };
 
-// Client API
+
 export const getClients = () => request("/api/clients");
 export const addClient = (clientData) => request("/api/clients/add", "POST", clientData); 
 export const deleteClient = (id) => request(`/api/clients/${id}`, "DELETE"); 
 
-// Employee API
+
 export const getEmployees = () => request("/api/employees");
 export const addEmployee = (employeeData) => request("/api/employees/add", "POST", employeeData); 
 export const deleteEmployee = (id) => request(`/api/employees/${id}`, "DELETE");
 
-// Appointment API
+
 export const getAppointments = () => request("/api/appointments");
 export const createAppointment = (appointmentData) => request("/api/appointments/add", "POST", appointmentData); 
 export const updateAppointmentStatus = (id, status) =>
   request(`/api/appointments/${id}/status`, "PATCH", { status }); 
 
 
-// Authentication API
+
 export const loginUser = async (credentials) => {
   const response = await request("/api/auth/login", "POST", credentials);
   if (response.token) {
@@ -107,13 +106,12 @@ export const getCurrentUser = async () => {
       },
     });
 
-    // ✅ Check if response is okay
+   
     if (!response.ok) {
       console.error("Error fetching user:", response.status);
       return { error: `Server returned ${response.status}` };
     }
 
-    // ✅ Ensure we are parsing JSON correctly
     const data = await response.json();
     console.log("Fetched User Data:", data);
     return data;

@@ -5,7 +5,7 @@ import { verifyToken } from "../middleware/middleware.js";
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Fetch all clients
+
 router.get("/", verifyToken, async (req, res) => {
   try {
     const clients = await prisma.client.findMany();
@@ -16,7 +16,7 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
-// Create a new client
+
 router.post("/add", verifyToken, async (req, res) => {
   const { name, email, phone } = req.body;
 

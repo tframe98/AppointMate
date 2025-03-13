@@ -1,57 +1,62 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getCurrentUser } from "../api/api";
+import { createContext, useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const useAuth = () => useContext(AuthContext);
+
+const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  const fetchUser = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      setUser(null);
+      localStorage.removeItem('token');
+      navigate('/login');
+    }
+  };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        try {
-          const userData = await getCurrentUser();
-          if (userData && !userData.error) {
-            setUser(userData);
-          } else {
-            logout();
-          }
-        } catch (error) {
-          console.error("Error fetching user:", error);
-          logout();
-        }
-      }
-    };
-
     fetchUser();
   }, []);
 
-  const login = (userData, token) => {
-    localStorage.setItem("token", token);
-    setUser(userData);
+  const login = async (email, password) => {
+    try {
+      const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
+      localStorage.setItem('token', data.token);
+      setUser(data.user);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   const logout = () => {
-    const navigate = useNavigate();
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
     setUser(null);
-    navigate("/login");
+    navigate('/login');
   };
 
+  const value = { user, login, logout };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within an AuthProvider");
-  return context;
 };
 
 export default AuthProvider;

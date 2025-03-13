@@ -5,7 +5,7 @@ import { verifyToken } from "../middleware/middleware.js";
 const router = express.Router();
 const prisma = new PrismaClient();
 
-//fetch all employees
+
 router.get("/", verifyToken, async (req, res) => {
   try {
     const employees = await prisma.employee.findMany();
@@ -16,7 +16,7 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
-// Create a new employee (Only Admins or HR can add employees)
+
 router.post("/add", verifyToken, async (req, res) => {
   const { name, email, role, password } = req.body;
 

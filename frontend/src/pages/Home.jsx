@@ -1,16 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/NavBar"; // Import Navbar
+import Navbar from "../components/NavBar"; 
 import "../styles/Home.css";
 
 const Home = () => {
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate(); 
 
   return (
     <>
       <Navbar />
       <div className="home-container">
-        {/* Hero Section */}
         <section className="hero-section">
           <h1>Effortless Appointment Scheduling</h1>
           <p>Streamline your booking process with our intuitive scheduling platform.</p>
@@ -19,7 +18,6 @@ const Home = () => {
           </button>
         </section>
 
-        {/* Features Section */}
         <section className="features-section">
           <div className="feature-card">
             <div className="feature-icon">📅</div>
@@ -46,7 +44,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Call to Action (Sign-Up Section) */}
         <section className="cta-section">
           <h2>Start Booking Smarter Today</h2>
           <p>Sign up now and let your clients schedule with ease.</p>
@@ -55,7 +52,6 @@ const Home = () => {
           </button>
         </section>
 
-        {/* Pricing Section */}
         <section className="pricing-section">
           <h2>Choose Your Plan</h2>
           <div className="pricing-container">
@@ -86,7 +82,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="footer">
           <p>&copy; {new Date().getFullYear()} AppointMate. All Rights Reserved.</p>
           <p><a href="mailto:support@appointmate.com">support@appointmate.com</a></p>

@@ -1,4 +1,3 @@
-/* Navbar Styles */
 .navbar {
   width: 100%;
   background: var(--primary-dark);
@@ -6,28 +5,26 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 40px; /* Increase left and right padding */
+  padding: 15px 40px; 
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
 }
 
-/* Ensure navbar contents stay within a reasonable width */
 .navbar-container {
   width: 100%;
-  max-width:95%; /* Prevents content from stretching too far */
+  max-width:95%; 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 auto; /* Centers navbar content */
+  margin: 0 auto; 
 }
 
-/* Adjust navbar links */
 .navbar-links {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap; /* Ensures responsiveness */
+  flex-wrap: wrap; 
 }
 
 .navbar-links a {
@@ -35,7 +32,7 @@
   text-decoration: none;
   font-size: 1rem;
   transition: color 0.3s ease-in-out;
-  white-space: nowrap; /* Prevents wrapping */
+  white-space: nowrap; 
 }
 
 .navbar-links a:hover {

@@ -9,12 +9,11 @@ const ClientEmployeeManagement = () => {
   const [selectedEmployee, setSelectedEmployee] = useState('All');
   const [employees, setEmployees] = useState([]);
 
-  // Fetch appointments and employees
   const fetchAppointments = async () => {
     const token = localStorage.getItem('token');
     try {
       const response = await axios.get(`${API_BASE_URL}/api/appointments/employee-appointments`, {
-        headers: { Authorization: token },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setAppointments(response.data);
     } catch (error) {
@@ -26,7 +25,7 @@ const ClientEmployeeManagement = () => {
     const token = localStorage.getItem('token');
     try {
       const response = await axios.get(`${API_BASE_URL}/api/employees`, {
-        headers: { Authorization: token },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setEmployees(response.data);
     } catch (error) {
@@ -39,7 +38,6 @@ const ClientEmployeeManagement = () => {
     fetchEmployees();
   }, []);
 
-  // Filter appointments by selected employee
   const filteredAppointments = selectedEmployee === 'All'
     ? appointments
     : appointments.filter((appt) => appt.employee?.name === selectedEmployee);

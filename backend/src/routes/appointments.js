@@ -1,77 +1,52 @@
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
-import { verifyToken } from '../middleware/middleware.js'; // Update the path as necessary
+import express from "express";
+import { PrismaClient } from "@prisma/client";
+import { verifyToken } from "../middleware/middleware.js";
 
 const router = express.Router();
 const prisma = new PrismaClient();
-
-router.get("/employee-appointments", verifyToken, async (req, res) => {
+// Get all appointments
+router.get("/", verifyToken, async (req, res) => {
   try {
-    const { userId } = req.user;
     const appointments = await prisma.appointment.findMany({
-      where: { employeeId: userId },
+      include: { employee: true, client: true, business: true },
     });
     res.json(appointments);
   } catch (error) {
-    console.error("Error fetching employee appointments:", error);
+    console.error("Error fetching appointments:", error);
     res.status(500).json({ error: "Failed to fetch appointments" });
   }
 });
 
-router.get('/schedule', verifyToken, async (req, res) => {
-  const { date } = req.query; 
+// Create an appointment
+router.post("/add", verifyToken, async (req, res) => {
+  const { clientId, employeeId, serviceId, dateTime, notes } = req.body;
   try {
-    const appointments = await prisma.appointment.findMany({
-      where: {
-        businessId: req.user.businessId,
-        date: new Date(date),
-      },
-      include: {
-        employee: true,
-        client: true,
+    const appointment = await prisma.appointment.create({
+      data: {
+        clientId,
+        employeeId,
+        serviceId,
+        dateTime: new Date(dateTime),
+        notes,
       },
     });
-
-    const schedule = appointments.reduce((acc, app) => {
-      const employeeName = app.employee?.name || 'Unassigned';
-      if (!acc[employeeName]) {
-        acc[employeeName] = [];
-      }
-      acc[employeeName].push({
-        id: app.id,
-        time: app.date.getHours() + app.date.getMinutes() / 60, // Convert time to position in pixels
-        clientName: app.client.name,
-        service: app.service
-      });
-      return acc;
-    }, {});
-
-    res.json(schedule);
+    res.status(201).json(appointment);
   } catch (error) {
-    console.error('Failed to fetch appointments:', error);
-    res.status(500).send('Error fetching appointments');
+    res.status(500).json({ error: "Failed to create appointment" });
   }
 });
 
-router.post("/add", verifyToken, async (req, res) => {
+// Get employee-specific appointments
+router.get("/employee-appointments", verifyToken, async (req, res) => {
   try {
-    const { name, email, service, date, time, employeeId, color } = req.body;
-
-    const newAppointment = await prisma.appointment.create({
-      data: {
-        clientName: name,
-        clientEmail: email,
-        service,
-        date: new Date(`${date}T${time}:00.000Z`),
-        employeeId: parseInt(employeeId),
-        color, 
-      },
+    const employeeAppointments = await prisma.appointment.findMany({
+      where: { employeeId: req.userId },
+      include: { client: true, service: true },
     });
-
-    res.status(201).json(newAppointment);
+    res.json(employeeAppointments);
   } catch (error) {
-    console.error("Error adding appointment:", error);
-    res.status(500).json({ error: "Failed to add appointment" });
+    console.error("Error fetching employee appointments:", error);
+    res.status(500).json({ error: "Error fetching employee appointments" });
   }
 });
 

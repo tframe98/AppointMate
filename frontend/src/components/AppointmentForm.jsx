@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-// Correct API Base URL
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 const AppointmentForm = ({ onAppointmentCreated }) => {
@@ -20,7 +19,7 @@ const AppointmentForm = ({ onAppointmentCreated }) => {
       );
       setDate('');
       setService('');
-      onAppointmentCreated(); // Refresh appointments on success
+      onAppointmentCreated(); 
     } catch (error) {
       console.error('Failed to create appointment.', error);
     }

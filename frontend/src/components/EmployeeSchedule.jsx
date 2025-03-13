@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/EmployeeSchedule.css'; // Ensure you create corresponding CSS
+import '../styles/EmployeeSchedule.css'; 
 
 const EmployeeSchedule = ({ date }) => {
   const [schedule, setSchedule] = useState({});

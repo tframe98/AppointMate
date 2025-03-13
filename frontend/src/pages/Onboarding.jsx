@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createBusinessProfile, getCurrentUser } from "../api/api"; // Ensure this function exists
+import { createBusinessProfile, getCurrentUser } from "../api/api"; 
 import "../styles/Onboarding.css";
 
 const Onboarding = () => {
@@ -18,7 +18,6 @@ const Onboarding = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // ✅ Check if user already has a business, redirect if true
   useEffect(() => {
     const checkUser = async () => {
       try {
@@ -57,7 +56,7 @@ const Onboarding = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error state
+    setError(""); 
   
     try {
       const response = await createBusinessProfile(businessData);
@@ -85,8 +84,6 @@ const Onboarding = () => {
 
       <form className="onboarding-form" onSubmit={handleSubmit}>
         <input type="text" name="businessName" placeholder="Business Name" value={businessData.businessName} onChange={handleChange} required />
-
-        {/* ✅ Business Type Dropdown */}
         <select name="businessType" value={businessData.businessType} onChange={handleChange} required>
           <option value="" disabled>Select Business Type</option>
           <option value="Fitness">Fitness</option>
@@ -95,13 +92,11 @@ const Onboarding = () => {
           <option value="Consulting">Consulting</option>
           <option value="Other">Other</option>
         </select>
-
         <input type="email" name="email" placeholder="Business Email" value={businessData.email} onChange={handleChange} required />
         <input type="tel" name="phone" placeholder="Phone Number" value={businessData.phone} onChange={handleChange} required />
         <input type="text" name="address" placeholder="Business Address" value={businessData.address} onChange={handleChange} required />
         <input type="text" name="operatingHours" placeholder="Operating Hours (e.g., 9 AM - 6 PM)" value={businessData.operatingHours} onChange={handleChange} required />
 
-        {/* ✅ Dynamic Services Input */}
         <h3>Services Offered:</h3>
         {businessData.services.map((service, index) => (
           <div key={index} className="service-input">
@@ -129,10 +124,7 @@ const Onboarding = () => {
           </div>
         ))}
 
-        {/* ✅ Button to Add More Services */}
         <button type="button" onClick={addService}>+ Add Another Service</button>
-
-        {/* ✅ Finish Setup Button */}
         <button type="submit">Finish Setup</button>
       </form>
     </div>

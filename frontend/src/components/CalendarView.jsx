@@ -1,74 +1,64 @@
-import FullCalendar from "@fullcalendar/react";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import "../styles/CalendarView.css";
+import React, { useEffect, useState } from 'react';
+import { getAppointments, getEmployees } from '../api/api';
+import '../styles/CalendarView.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
-
-const CustomCalendar = () => {
+const CalendarView = () => {
   const [appointments, setAppointments] = useState([]);
   const [employees, setEmployees] = useState([]);
-
-  const fetchAppointments = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/appointments`, {
-        headers: { Authorization: token },
-      });
-      const formattedAppointments = response.data.map((appt) => ({
-        title: appt.service, // ✅ Show service name as title
-        start: appt.date,
-        extendedProps: {
-          employee: appt.employeeName || "Unassigned",
-          client: appt.clientName || "Unknown",
-          color: appt.color, // ✅ Use stored color
-        },
-      }));
-      setAppointments(formattedAppointments);
-    } catch (error) {
-      console.error("Failed to fetch appointments:", error);
-    }
-  };
-
-  const fetchEmployees = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/employees`, {
-        headers: { Authorization: token },
-      });
-      setEmployees(response.data);
-    } catch (error) {
-      console.error("Failed to fetch employees:", error);
-    }
-  };
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const appointmentsData = await getAppointments();
+        setAppointments(appointmentsData);
+      } catch (err) {
+        console.error('Failed to fetch appointments:', err);
+        setError(err.message);
+      }
+    };
+
+    const fetchEmployees = async () => {
+      try {
+        const employeesData = await getEmployees();
+        setEmployees(employeesData);
+      } catch (err) {
+        console.error('Failed to fetch employees:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchAppointments();
     fetchEmployees();
   }, []);
 
+  if (loading) return <div className="loading">Loading calendar...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
+
   return (
-    <div className="custom-calendar-container">
-      <FullCalendar
-        plugins={[timeGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "timeGridWeek,timeGridDay",
-        }}
-        events={appointments}
-        eventContent={(eventInfo) => (
-          <div style={{ backgroundColor: eventInfo.event.extendedProps.color, color: "#fff", padding: "5px", borderRadius: "4px" }}>
-            <strong>{eventInfo.timeText}</strong>
-            <div>{eventInfo.event.title}</div>
+    <div className="calendar-container">
+      <h2>Today's Schedule - {new Date().toLocaleDateString()}</h2>
+      <div className="calendar-grid">
+        {employees.map((employee) => (
+          <div key={employee.id} className="calendar-column">
+            <div className="employee-name">{employee.name}</div>
+            {appointments
+              .filter((appt) => appt.employeeId === employee.id)
+              .map((appt) => (
+                <div key={appt.id} className="appointment-card" style={{ backgroundColor: appt.color }}>
+                  <div className="appointment-time">{appt.time}</div>
+                  <div className="appointment-client">{appt.clientName}</div>
+                  <div className="appointment-service">{appt.service}</div>
+                </div>
+              ))}
           </div>
-        )}
-      />
+        ))}
+      </div>
     </div>
   );
 };
 
-export default CustomCalendar;
+export default CalendarView;

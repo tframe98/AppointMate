@@ -8,11 +8,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const handleAddEmployee = () => {
-    navigate("/employees"); // Or open a modal/form
+    navigate("/employees"); 
   };
 
   const handleAddClient = () => {
-    navigate("/clients"); // Or open a modal/form
+    navigate("/clients"); 
   };
 
   return (

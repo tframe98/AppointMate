@@ -1,4 +1,3 @@
-// src/routes/middleware.js
 import jwt from 'jsonwebtoken';
 
 export function verifyToken(req, res, next) {
@@ -11,7 +10,7 @@ export function verifyToken(req, res, next) {
     if (err) {
       return res.status(403).json({ error: 'Failed to authenticate token' });
     }
-    req.user = decoded; // Attach the decoded token to the request object
-    next(); // Proceed to the next middleware or route handler
+    req.user = decoded; 
+    next(); 
   });
 }

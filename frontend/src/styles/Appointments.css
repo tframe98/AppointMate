@@ -1,4 +1,3 @@
-/* Appointments Page Styles */
 .appointments-container {
   max-width: 800px;
   margin: 40px auto;
@@ -14,7 +13,6 @@ h2 {
   margin-bottom: 20px;
 }
 
-/* Form Styling */
 .appointment-form {
   display: flex;
   flex-direction: column;
@@ -43,7 +41,6 @@ h2 {
   background: #7096D1;
 }
 
-/* List of Appointments */
 .appointment-list {
   list-style: none;
   padding: 0;

@@ -7,15 +7,13 @@ const Auth = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
 
-  // Detect URL path to determine if it's login or register
   useEffect(() => {
     setIsLogin(location.pathname === "/login");
   }, [location.pathname]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // Redirect after login/register
-    navigate("/dashboard"); // Change this if necessary
+    e.preventDefault();   
+    navigate("/dashboard"); 
   };
 
   return (
