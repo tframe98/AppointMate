@@ -20,66 +20,65 @@ model User {
   id         Int       @id @default(autoincrement())
   email      String    @unique
   password   String
-  role       String    // Keep old column for now
-  role_enum  UserRole?  // Add new enum column
-  business   Business? @relation(fields: [businessId], references: [id])
-  businessId Int?
+  role       UserRole  @default(BUSINESS_OWNER) // Default role is Business Owner
+  business   Business? 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  employee   Employee?
 }
 
 /* Businesses Table */
 model Business {
-  id           Int           @id @default(autoincrement())
-  name         String
-  type         String?
-  email        String   @unique
-  phone        String?
-  address      String?
+  id              Int           @id @default(autoincrement())
+  name            String
+  type            String?
+  email           String        @unique
+  phone           String?
+  address         String?
   operatingHours  String?
-  ownerId      Int      @unique
-  users        User[]
-  employees    Employee[]
-  clients      Client[]
-  services     Service[] // Businesses offer services
-  appointments Appointment[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-}
-
-/* Clients Table */
-model Client {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String         @unique
-  phone        String?
-  business     Business       @relation(fields: [businessId], references: [id])
-  businessId   Int
-  appointments Appointment[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  ownerId         Int           @unique
+  owner           User          @relation(fields: [ownerId], references: [id])
+  employees       Employee[]
+  clients         Client[]
+  services        Service[]
+  appointments    Appointment[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 /* Employees Table */
 model Employee {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String         @unique
-  phone        String?
-  role         String
-  business     Business       @relation(fields: [businessId], references: [id])
-  businessId   Int
-  appointments Appointment[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id            Int           @id @default(autoincrement())
+  name          String
+  email         String        @unique
+  password      String
+  role          String
+  position      String?
+  business      Business      @relation(fields: [businessId], references: [id])
+  businessId    Int
+  appointments  Appointment[]
+  user          User          @relation(fields: [userId], references: [id])
+  userId        Int           @unique
+}
+
+/* Clients Table */
+model Client {
+  id            Int           @id @default(autoincrement())
+  name          String
+  email         String        @unique
+  phone         String?
+  business      Business      @relation(fields: [businessId], references: [id])
+  businessId    Int
+  appointments  Appointment[]
 }
 
 /* Services Table */
 model Service {
-  id           Int           @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   name         String
   description  String?
   price        Float
+  color        String?
   business     Business       @relation(fields: [businessId], references: [id])
   businessId   Int
   appointments Appointment[]
@@ -87,20 +86,25 @@ model Service {
 
 /* Appointments Table */
 model Appointment {
-  id           Int           @id @default(autoincrement())
-  date         DateTime
-  service      Service?      @relation(fields: [serviceId], references: [id])
-  serviceId    Int?
-  color        String?
-  client       Client?        @relation(fields: [clientId], references: [id])
-  clientId     Int?
-  employee     Employee?      @relation(fields: [employeeId], references: [id])
-  employeeId   Int?
-  business     Business       @relation(fields: [businessId], references: [id])
-  businessId   Int
-  status       AppointmentStatus @default(PENDING) // Track appointment status
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id          Int             @id @default(autoincrement())
+  dateTime    DateTime
+  color       String?
+  status      AppointmentStatus @default(PENDING)
+  
+  business    Business        @relation(fields: [businessId], references: [id])
+  businessId  Int
+  
+  service     Service?        @relation(fields: [serviceId], references: [id])
+  serviceId   Int?
+  
+  client      Client?         @relation(fields: [clientId], references: [id])
+  clientId    Int?
+  
+  employee    Employee?       @relation(fields: [employeeId], references: [id])
+  employeeId  Int?
+  
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 }
 
 /* Appointment Status Enum */
@@ -110,3 +114,9 @@ enum AppointmentStatus {
   CANCELED
 }
 
+/*
+Note:
+- Business Owners and Admin users can create Employees and Clients.
+- Business Owners, Admin, and Employees can create Clients and Appointments.
+- Implement role-based checks in your service/controller layer to enforce these rules.
+*/

@@ -1,31 +1,39 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+import * as api from '../api/api';
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
-const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children, navigate }) => {
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const fetchUser = async () => {
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(response.data);
+      const response = await api.request('/api/auth/me', 'GET');
+      setUser(response);
     } catch (error) {
       console.error('Error fetching user:', error);
       setUser(null);
       localStorage.removeItem('token');
-      navigate('/login');
+
+      if (
+        !window.location.pathname.includes('onboarding') &&
+        !window.location.pathname.includes('signup') &&
+        !window.location.pathname.includes('login')
+      ) {
+        navigate('/login');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,12 +43,41 @@ const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
-      localStorage.setItem('token', data.token);
-      setUser(data.user);
-      navigate('/dashboard');
+      const response = await api.request('/api/auth/login', 'POST', { email, password });
+
+      if (!response || !response.token) {
+        console.error('Login failed: No token returned');
+        return;
+      }
+
+      localStorage.setItem('token', response.token);
+      setUser(response.user);
+
+      navigate(response.user.role === 'BUSINESS_OWNER' ? '/onboarding' : '/dashboard');
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('Login failed:', error?.message || 'Unknown error during login');
+    }
+  };
+
+  const signup = async (email, password) => {
+    try {
+      const response = await api.request('/api/auth/register', 'POST', {
+        email,
+        password,
+        role: 'BUSINESS_OWNER',
+      });
+
+      if (!response || !response.token) {
+        console.error('Signup failed: No token returned');
+        return;
+      }
+
+      localStorage.setItem('token', response.token);
+      setUser(response.user);
+
+      navigate('/onboarding');
+    } catch (error) {
+      console.error('Signup failed:', error?.message || 'Unknown error during signup');
     }
   };
 
@@ -50,7 +87,7 @@ const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
-  const value = { user, login, logout };
+  const value = { user, login, signup, logout, loading };
 
   return (
     <AuthContext.Provider value={value}>

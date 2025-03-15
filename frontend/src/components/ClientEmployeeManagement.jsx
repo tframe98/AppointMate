@@ -1,46 +1,51 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getEmployees } from '../api/api';
+import * as api from '../api/api'; // Ensure all named exports, including request, are accessible
 import '../styles/ClientEmployeeManagement.css';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 const ClientEmployeeManagement = () => {
   const [appointments, setAppointments] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState('All');
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const fetchAppointments = async () => {
-    const token = localStorage.getItem('token');
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/appointments/employee-appointments`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setAppointments(response.data);
-    } catch (error) {
-      console.error('Failed to fetch appointments:', error);
+      const data = await api.request('/api/appointments/employee-appointments', 'GET');
+      setAppointments(data);
+    } catch (err) {
+      console.error('Failed to fetch appointments:', err);
+      setError('Failed to load appointments.');
     }
   };
 
   const fetchEmployees = async () => {
-    const token = localStorage.getItem('token');
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/employees`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setEmployees(response.data);
-    } catch (error) {
-      console.error('Failed to fetch employees:', error);
+      const data = await getEmployees();
+      setEmployees(data);
+    } catch (err) {
+      console.error('Failed to fetch employees:', err);
+      setError('Failed to load employees.');
     }
   };
 
   useEffect(() => {
-    fetchAppointments();
-    fetchEmployees();
+    const fetchData = async () => {
+      setLoading(true);
+      await Promise.all([fetchAppointments(), fetchEmployees()]);
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   const filteredAppointments = selectedEmployee === 'All'
     ? appointments
     : appointments.filter((appt) => appt.employee?.name === selectedEmployee);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
     <div className="client-employee-container">
@@ -61,26 +66,30 @@ const ClientEmployeeManagement = () => {
         </select>
       </div>
       <div className="appointments-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Client</th>
-              <th>Employee</th>
-              <th>Service</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAppointments.map((appt) => (
-              <tr key={appt.id}>
-                <td>{appt.client?.name || 'Unknown'}</td>
-                <td>{appt.employee?.name || 'Unassigned'}</td>
-                <td>{appt.service}</td>
-                <td>{new Date(appt.date).toLocaleString()}</td>
+        {filteredAppointments.length === 0 ? (
+          <p>No appointments found.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Employee</th>
+                <th>Service</th>
+                <th>Date</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredAppointments.map((appt) => (
+                <tr key={appt.id}>
+                  <td>{appt.client?.name || 'Unknown'}</td>
+                  <td>{appt.employee?.name || 'Unassigned'}</td>
+                  <td>{appt.service}</td>
+                  <td>{new Date(appt.date).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

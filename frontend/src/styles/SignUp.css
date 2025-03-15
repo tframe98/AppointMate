@@ -11,43 +11,78 @@
 h2 {
   color: #081f5c;
   margin-bottom: 20px;
+  font-size: 1.8rem;
 }
 
 .signup-form input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
+  font-size: 1rem;
+  transition: border 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.signup-form input:focus {
+  border-color: #334EAC;
+  box-shadow: 0 0 8px rgba(51, 78, 172, 0.3);
+  outline: none;
 }
 
 .signup-form button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background: #334EAC;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: 0.3s;
+  font-size: 1rem;
+  transition: background 0.3s ease-in-out, transform 0.2s ease;
 }
 
 .signup-form button:hover {
   background: #7096D1;
+  transform: scale(1.03);
 }
 
 .error-message {
   color: #ff4d4d;
   margin-bottom: 10px;
+  font-size: 0.9rem;
 }
 
 p span {
   cursor: pointer;
   color: #334EAC;
   font-weight: bold;
+  transition: color 0.3s ease-in-out;
 }
 
 p span:hover {
   color: #7096D1;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+  .signup-container {
+    padding: 15px;
+    max-width: 90%;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  .signup-form input {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .signup-form button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
 }

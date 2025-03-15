@@ -5,10 +5,19 @@ import { verifyToken } from "../middleware/middleware.js";
 const router = express.Router();
 const prisma = new PrismaClient();
 
+// Helper: Check if user role is allowed
+const isAuthorized = (role) => {
+  return role === "BUSINESS_OWNER" || role === "ADMIN";
+};
+
 router.post("/setup", verifyToken, async (req, res) => {
+  if (!isAuthorized(req.role)) {
+    return res.status(403).json({ error: "Unauthorized access" });
+  }
+
   try {
     const { businessName, businessType, email, phone, address, operatingHours } = req.body;
-const services = Array.isArray(req.body.services) ? req.body.services : [];
+    const services = Array.isArray(req.body.services) ? req.body.services : [];
 
     const business = await prisma.business.create({
       data: {
@@ -18,7 +27,7 @@ const services = Array.isArray(req.body.services) ? req.body.services : [];
         phone,
         address,
         operatingHours,
-        ownerId: req.user.userId,
+        ownerId: req.userId,
         services: {
           create: services.map(service => ({
             name: service.name,
@@ -30,8 +39,12 @@ const services = Array.isArray(req.body.services) ? req.body.services : [];
     });
 
     await prisma.user.update({
-      where: { id: req.user.userId },
-      data: { businessId: business.id },
+      where: { id: req.userId }, 
+      data: {
+        business: {
+          connect: { id: business.id }
+        }
+      }
     });
 
     res.status(201).json({ success: true, business });

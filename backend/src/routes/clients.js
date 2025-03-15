@@ -5,10 +5,21 @@ import { verifyToken } from "../middleware/middleware.js";
 const router = express.Router();
 const prisma = new PrismaClient();
 
+const isAuthorized = (role) => {
+  return role === "BUSINESS_OWNER" || role === "ADMIN" || role === "EMPLOYEE";
+};
 
 router.get("/", verifyToken, async (req, res) => {
+  if (!isAuthorized(req.role)) {
+    return res.status(403).json({ error: "Unauthorized access" });
+  }
+
   try {
-    const clients = await prisma.client.findMany();
+    const clients = await prisma.client.findMany({
+      where: {
+        businessId: req.businessId || undefined, // optionally restrict by businessId
+      },
+    });
     res.json(clients);
   } catch (error) {
     console.error("Error fetching clients:", error);
@@ -16,8 +27,11 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
-
 router.post("/add", verifyToken, async (req, res) => {
+  if (!isAuthorized(req.role)) {
+    return res.status(403).json({ error: "Unauthorized access" });
+  }
+
   const { name, email, phone } = req.body;
 
   if (!name || !email || !phone) {
@@ -38,6 +52,11 @@ router.post("/add", verifyToken, async (req, res) => {
         name,
         email,
         phone,
+        business: {
+          connect: {
+            id: req.businessId, 
+          },
+        },
       },
     });
 

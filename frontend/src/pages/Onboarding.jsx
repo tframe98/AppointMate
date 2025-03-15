@@ -15,6 +15,7 @@ const Onboarding = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -54,28 +55,43 @@ const Onboarding = () => {
     }));
   };
 
+  const validateForm = () => {
+    if (!businessData.businessName || !businessData.businessType || !businessData.email || !businessData.phone || !businessData.address) {
+      setError("All fields are required.");
+      return false;
+    }
+    if (businessData.services.some(service => !service.name || service.price === "" || !service.description)) {
+      setError("All service fields must be filled.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); 
-  
+    setError("");
+    if (!validateForm()) return;
+    
+    setSubmitting(true);
     try {
       const response = await createBusinessProfile(businessData);
-      console.log("API Response:", response); 
-  
+      console.log("API Response:", response);
+
       if (response.success) {
-        console.log("Redirecting to dashboard..."); 
-        navigate("/dashboard"); 
-        return; 
+        console.log("Redirecting to dashboard...");
+        navigate("/dashboard");
       } else {
         setError("Business setup failed. Please check your details.");
       }
     } catch (error) {
       console.error("Error submitting business setup:", error);
       setError("An error occurred. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (loading) return <p>Loading...</p>; 
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="onboarding-container">
@@ -125,7 +141,7 @@ const Onboarding = () => {
         ))}
 
         <button type="button" onClick={addService}>+ Add Another Service</button>
-        <button type="submit">Finish Setup</button>
+        <button type="submit" disabled={submitting}>{submitting ? "Submitting..." : "Finish Setup"}</button>
       </form>
     </div>
   );

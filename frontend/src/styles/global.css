@@ -14,11 +14,14 @@ body {
   background-color: var(--background);
   color: var(--text-dark);
   margin: 0;
-  padding: 0;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--primary-dark);
+  line-height: 1.2;
 }
 
 button {
@@ -28,18 +31,21 @@ button {
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out, transform 0.2s ease;
 }
 
 button:hover {
   background-color: var(--secondary);
+  transform: scale(1.03);
 }
 
 a {
   color: var(--primary);
   text-decoration: none;
+  transition: color 0.3s ease-in-out;
 }
 
 a:hover {
   text-decoration: underline;
+  color: var(--secondary);
 }

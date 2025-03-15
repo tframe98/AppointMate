@@ -10,6 +10,7 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,19 +22,23 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
+    setLoading(true);
+
     try {
       const data = await loginUser(formData);
 
       if (data && data.token) {
         localStorage.setItem("token", data.token);
-        navigate("/dashboard"); 
+        navigate("/dashboard");
       } else {
-        setError(data.error || "Login failed. Please try again.");
+        setError(data.error || "Invalid email or password. Please try again.");
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Something went wrong. Please try again.");
+      setError("Something went wrong. Please check your credentials and try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,6 +61,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              aria-label="Email address"
             />
           </div>
 
@@ -70,10 +76,13 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              aria-label="Password"
             />
           </div>
 
-          <button type="submit" className="login-btn">Login</button>
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </form>
 
         <div className="login-footer">

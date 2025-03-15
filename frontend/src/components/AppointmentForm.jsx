@@ -1,32 +1,47 @@
 import { useState } from 'react';
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+import { createAppointment } from '../api/api';
 
 const AppointmentForm = ({ onAppointmentCreated }) => {
   const [date, setDate] = useState('');
   const [service, setService] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+    setError('');
+    setSuccessMessage('');
+
+    // Basic validation
+    if (!date || !service) {
+      setError('Both date and service are required.');
+      return;
+    }
 
     try {
-      await axios.post(
-        `${API_BASE_URL}/api/appointments/create`,
-        { date, service },
-        { headers: { Authorization: token } }
-      );
+      setLoading(true);
+      await createAppointment({ dateTime: date, service });
       setDate('');
       setService('');
-      onAppointmentCreated(); 
+      setSuccessMessage('Appointment successfully booked!');
+      if (onAppointmentCreated) {
+        onAppointmentCreated();
+      }
     } catch (error) {
       console.error('Failed to create appointment.', error);
+      setError('Failed to create appointment. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <form className="appointment-form" onSubmit={handleSubmit}>
+      <h2>Book an Appointment</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+
       <label htmlFor="date">Date & Time:</label>
       <input
         type="datetime-local"
@@ -46,7 +61,9 @@ const AppointmentForm = ({ onAppointmentCreated }) => {
         required
       />
 
-      <button type="submit">Book Appointment</button>
+      <button type="submit" disabled={loading}>
+        {loading ? 'Booking...' : 'Book Appointment'}
+      </button>
     </form>
   );
 };
