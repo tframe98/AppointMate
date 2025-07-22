@@ -26,7 +26,7 @@ export async function PUT(req: NextRequest) {
   try {
     const [event] = await db.update(EventTable)
       .set({ name, description, durationInMinutes, isActive })
-      .where(EventTable.id.eq(id))
+      .where(eq(EventTable.id, id))
       .returning();
     if (!event) return NextResponse.json({ error: 'Event type not found' }, { status: 404 });
     return NextResponse.json(event);
