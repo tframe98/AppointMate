@@ -77,10 +77,8 @@ export async function POST(req: NextRequest) {
   }).returning();
   // Send confirmation email to guest
   await sendConfirmationEmail({ guestEmail, guestName, event, startDateTime });
-  // Send notification to host (if event has hostEmail field, otherwise skip)
-  if (event.hostEmail) {
-    await sendHostNotification({ hostEmail: event.hostEmail, guestName, guestEmail, event, startDateTime });
-  }
+  // Send notification to host (skipped, as event.hostEmail does not exist)
+  // If you want to notify the host, you need to fetch the host's email another way.
   return NextResponse.json({ booking, success: true }, { status: 201 });
 }
 
