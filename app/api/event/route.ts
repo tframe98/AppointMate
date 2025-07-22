@@ -40,7 +40,7 @@ export async function DELETE(req: NextRequest) {
   const { id } = await req.json();
   try {
     const [event] = await db.delete(EventTable)
-      .where(EventTable.id.eq(id))
+      .where(eq(EventTable.id, id))
       .returning();
     if (!event) return NextResponse.json({ error: 'Event type not found' }, { status: 404 });
     return NextResponse.json({ success: true });
