@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/drizzle/db';
 import { BookingTable, EventTable } from '@/drizzle/schema';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
@@ -53,7 +53,9 @@ export async function GET(req: NextRequest) {
   const events = await db.query.EventTable.findMany({ where: eq(EventTable.clerkUserId, clerkUserId) });
   const eventIds = events.map(e => e.id);
   // Find all bookings for these events
-  const bookings = await db.query.BookingTable.findMany({ where: (row) => eventIds.includes(row.eventId) });
+  const bookings = eventIds.length > 0
+    ? await db.query.BookingTable.findMany({ where: inArray(BookingTable.eventId, eventIds) })
+    : [];
   return NextResponse.json(bookings);
 }
 
